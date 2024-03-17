@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
+
+body, html {
+    margin: 0;
+    padding-top: 10px;
+    font-family: 'Arial', sans-serif;
+}
+
+h2 {
+    text-align: center;
+    font-size: 30px;
+    color: #192B5A;
+}
+
+h4 {
+    font-size: 15px;
+    color: white;
+}
+
+header {
+    background-color: #2E3A59; /* Change this to match your branding #1C3156; */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+main {
+    margin-top: 100px; /* Adjust this value based on your header's actual height */
+}
+
+#navbar {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 100px;
+    border-bottom: 3%; /* Space from the previous content */
+}
+
+#navbar #logo {
+    height: 80px;
+    width: auto;
+    padding: 0 10px;
+}
+
+#brand-name {
+    font-family: 'Open+Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+    justify-content: start;
+}
+
+#nav-links a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: 20px;
+    line-height: 60px;
+    position: relative;
+}
+
+#nav-links a:hover,
+#nav-links a:focus {
+    color: #007bff;
+}
+
+.cta-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+}
+
+#transaction-demo {
+    display: flex;
+    margin-top: 2%; /* Adjust top margin to prevent overlap with fixed header */
+}
+
+.column {
+    flex: 1;
+    border-radius: 4%;
+    align-items: center center;
+    width: 100%;
+    height: 100%;
+    margin: 1%;
+    padding: 1%;
+}
+
+#sender-column {
+    background-color: #C2D0DB; /* #AC580080; #5A7579;*/
+}
+
+#algorithm-column {
+    background-color: #15608270; /* ##6F8FAF; #5A7579; #45370F; */
+}
+
+#receiver-column {
+    background-color: #818BC680;
+}
+
+#algorithm-column, #receiver-column {
+    filter: blur(200px); /* Adjust the blur radius as needed */
+    transition: filter 0.5s ease; /* Smooth transition for blurring/unblurring */
+    pointer-events: none; /* Optional: Prevents interaction with the blurred columns */
+    user-select: none; /* Optional: Prevents text selection in the blurred columns */
+}
+
+#utxo-form #target-form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds space between form elements */
+    margin-bottom: 20px;
+}
+
+#utxo-form label,
+#target-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #192B5A;
+}
+
+#utxo-form input[type="text"],
+#target-form input[type="number"] {
+    padding: 2%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#utxo-form button,
+#target-form button{
+    padding: 10px 15px;
+    border: 10px;
+    border-radius: 5px;
+    background-color: #192B5A; /* #1C3156; */
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#utxo-form button:hover {
+    background-color: #163a5f; /* A slightly darker shade for hover effect */
+}
+
+#bitcoin-core-results, #coinxpert-results {
+    border: 2px solid; /* Adds a border to the rectangular shape */
+    margin-top: 10px;
+    color: #fff;
+    border-radius: 20%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex;
+    align-items: flex;
+    padding: 2%;
+    padding-left: 6%;
+}
+
+.wallet {
+    background-image: url('/static/images/btc_wallet.png'); /* The path to your wallet image */
+    background-size: contain; /* This will cover the entire div area */
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 18em; /* You can adjust this to fit the aspect ratio of your image */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Center children horizontally */
+    align-items: center; /* Center children vertically */
+    padding-top: 18%;
+    padding-left: 5%;
+    width: 90%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.coin, .change {
+    width: 60px; /* Diameter of the coin */
+    height: 60px; /* Diameter of the coin */
+    border-radius: 50%; /* Make the coins circular */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 0%; /* Space between coins */
+    margin-right: 5%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); /* Optional: shadow for depth */
+    font-weight: bold;
+    overflow: hidden;
+}
+
+.coin {
+    background-color: #FFD700;
+    color: #525206;/* Yellow color for coins */
+}
+
+.change {
+    background-color: #8C8C8C; /* Gray background for change output coin */
+    color: #FFFFFF;/* Yellow color for coins */
+}
+
+.algorithm-box-btccore, .algorithm-box-coinxpert {
+    margin: 1%;
+    padding: 1%;
+    border-radius: 4%;
+}
+
+.algorithm-box-btccore {
+    margin-bottom: 5%;
+    background-color: #C2D0DB;  /* #B2BEB5; #F7931A95; */
+}
+
+.algorithm-box-coinxpert {
+    background-color: #156082; /* #2E3A59; #5A757980; */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5), 0px 12px 24px rgba(0, 0, 0, 0.4), 0px 16px 32px rgba(0, 0, 0, 0.3);
+}
+
+.legend {
+    display: flex;
+    padding: 10px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+
+.legend-item span {
+    font-size: 16px;
+}
+
+.transaction-fee {
+    color: #333; /* Dark grey color for better visibility */
+    font-weight: bold; /* Make it stand out a bit */
+}
+
+.highlighted-border {
+    border: 3px dashed #722F37; /* Change the color as needed */
+    border-radius: 5%;
+    padding: 2%;
+    position: relative;
+    animation: pulseBorder 0.4s 8;
+}
+
+@keyframes pulseBorder {
+    0% { border-color: #722F37; }
+    50% { border-color: transparent; }
+    100% { border-color: #722F37; }
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button {
+    display: flex;
+    padding: 10px 15px;
+    border: 8px;
+    border-radius: 5px;
+    background-color: #722F37;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 110%;
+}
+
+#reset-transaction-btn-container {
+    width: 100%;
+}
+
+#reset-transaction-btn, #reset-transaction-btn-error-amount {
+    background-color: #007bff;
+}
+
+.error-message {
+    color: #722F37; /* Error message in red */
+    margin: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 150%
+}
+
+
+.transaction-fee {
+    font-size: 1em;
+    color: #333;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: inline-block; /* To wrap content and allow custom positioning */
+    width: auto;
+    text-align: center;
+    font-weight: bold;
+}
+
+.transaction-fee span.satoshi-amount {
+    color: #ff9500;
+}
+
+.transaction-fee span.btc-amount {
+    color: #4a90e2;
+    font-size: 0.9em;
+}
