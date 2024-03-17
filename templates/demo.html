@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CoinXpert - Transaction Fees Optimizer</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" type="image/png" href="/static/images/btc_wallet.png">
+</head>
+<body>
+<header>
+    <nav id="navbar">
+        <img src="/static/images/coinxpert_logo.png" alt="CoinXpert Logo" id="logo"/>
+        <span id="brand-name">CoinXpert</span>
+        <div id="nav-links">
+            <a href="#project">Project</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="#get-started" class="cta-button">Get Started</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div id="reset-transaction-btn-container" class="button-container" style="display: none;">
+        <button id="reset-transaction-btn" class="button" style="display: none;">Start New Transaction</button>
+    </div>
+    <div id="transaction-demo">
+        <div id="sender-column" class="column">
+            <h2>Sender Wallet</h2>
+            <form id="utxo-form">
+                <label for="utxo-input">Your wallet UTXOs:</label>
+                <input type="text" id="utxo-input" placeholder="(comma-separated) - e.g., 0.1, 2, 12.23" required>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="wallet" class="wallet" style="background-image: url('/static/images/btc_wallet.png');">
+                <!-- Coins will be dynamically inserted here -->
+            </div>
+            <form id="target-form">
+                <label for="target-amount">Target Amount:</label>
+                <input type="number" id="target-amount" placeholder="e.g. 17.85" step="0.01" required>
+                <button id="submit-target-amount-btn" type="submit">Submit</button>
+            </form>
+            <div id="error-message" class="error-message" style="display: none;"></div>
+            <div id="reset-transaction-btn-container-error-amount" class="button-container" style="display: none;">
+                <button id="reset-transaction-btn-error-amount" class="button" style="display: none;">Start New Transaction</button>
+            </div>
+        </div>
+        <div id="algorithm-column" class="column">
+            <h2>Coin Selection Algorithms</h2>
+            <div class="algorithm-box-btccore">
+                <h3 style="color: #FFFF;">Bitcoin Core</h3>
+                <div id="bitcoin-core-results">
+                    <!-- Bitcoin Core results will be displayed here -->
+                </div>
+                <p id="bitcoin-core-fee" class="transaction-fee">
+                    Fees: <span id="bitcoin-core-fee-value" class="satoshi-amount">0</span>
+                </p>
+            </div>
+            <div class="algorithm-box-coinxpert">
+                <h3 style="color: #FFFF;">CoinXpert</h3>
+                <div id="process-transaction-btn-container" class="button-container">
+                    <button id="process-transaction-btn" class="button" style="display: none;">Process Transaction</button>
+                </div>
+                <div id="coinxpert-results">
+                    <!-- CoinXpert results will be displayed here -->
+                </div>
+                <p id="coinxpert-fee" class="transaction-fee">
+                    Fees: <span id="coinxpert-fee-value" class="satoshi-amount">0</span>
+                </p>
+            </div>
+            <div id="legend" class="legend">
+                <h4>Legend:</h4>
+                <div class="legend-item">
+                    <div class="coin"></div>
+                    <span style="color: #FFD700;">Selected UTXOs</span>
+                </div>
+                <div class="legend-item">
+                    <div class="change"></div>
+                    <span style="color: #8C8C8C;">Change Output</span>
+                </div>
+            </div>
+        </div>
+        <div id="receiver-column" class="column">
+            <h2>Receiver Wallet</h2>
+            <div id="wallet_receive" class="wallet" style="background-image: url('/static/images/btc_wallet.png');">
+                <!-- Coins will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer></footer>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
