@@ -1,8 +1,27 @@
+"""
+Coin Selection Algorithms for UTXO based Transactions.
+
+This module provides implementations of various coin selection algorithms,
+including the Bitcoin Core algorithm, a greedy approach, and a genetic algorithm.
+These algorithms aim to optimize transaction fees and selection efficiency.
+"""
+
+
 import random
 from typing import List, Tuple
 from utxo_models import UTXO
 
 def bitcoin_core_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[UTXO], UTXO]:
+    """
+    Bitcoin Core's coin selection algorithm.
+
+    Parameters:
+        utxos (List[UTXO]): A list of available UTXOs.
+        target (float): The target amount to achieve with selected UTXOs.
+
+    Returns:
+        Tuple[List[UTXO], UTXO]: A tuple containing the list of selected UTXOs and the change UTXO.
+    """
     utxos.sort(key=lambda x: x.value)
     nTotalLower = sum(utxo.value for utxo in utxos if utxo.value < target)
     nLowestLarger = next((utxo for utxo in reversed(utxos) if utxo.value > target), None)
@@ -34,6 +53,16 @@ def bitcoin_core_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[
 
 
 def greedy_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[UTXO], UTXO]:
+    """
+    Greedy algorithm for coin selection.
+
+    Parameters:
+        utxos (List[UTXO]): A list of available UTXOs.
+        target (float): The target amount to achieve with selected UTXOs.
+
+    Returns:
+        Tuple[List[UTXO], UTXO]: A tuple containing the list of selected UTXOs and the change UTXO.
+    """
     sorted_utxos = sorted(utxos, key=lambda x: x.value, reverse=True)
     selected = []
     total_value = 0
@@ -47,27 +76,63 @@ def greedy_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[UTXO],
 
 
 class Individual:
+    """
+    Represents an individual in the genetic algorithm with a chromosome.
+
+    Attributes:
+        chromosome (List[bool]): A list representing the presence of UTXOs.
+        utxos (List[UTXO]): The available UTXOs.
+        target (float): The target transaction amount.
+        fitness (float): The fitness score of the individual.
+    """
     def __init__(self, chromosome: List[bool], utxos: List[UTXO], target: float):
+        """
+        Initializes an individual with a chromosome, available UTXOs, and target amount.
+        """
         self.chromosome = chromosome
         self.utxos = utxos
         self.target = target
         self.fitness = self.calculate_fitness()
 
     def calculate_fitness(self) -> float:
+        """
+        Calculates the fitness of the individual based on the total value of selected UTXOs.
+
+        Returns:
+            A float representing the fitness score.
+        """
         total_value = sum(utxo.value for utxo, selected in zip(self.utxos, self.chromosome) if selected)
         if total_value < self.target:
             return 0
         return 1 / (1 + total_value - self.target)
 
 def initialize_population(utxos: List[UTXO], target: float, population_size: int) -> List[Individual]:
+    """
+    Initializes a population of individuals for the genetic algorithm.
+
+    Returns:
+        A list of Individual objects representing the initial population.
+    """
     return [Individual([random.choice([True, False]) for _ in utxos], utxos, target) for _ in range(population_size)]
 
 def select(population: List[Individual]) -> List[Individual]:
+    """
+    Selects a subset of the population based on fitness to survive to the next generation.
+
+    Returns:
+        A list of Individual objects that survived.
+    """
     population.sort(key=lambda individual: individual.fitness, reverse=True)
     survivors = population[:len(population) // 2]
     return survivors + random.sample(population, len(population) // 2)
 
 def crossover(parent1: Individual, parent2: Individual) -> Tuple[Individual, Individual]:
+    """
+    Performs a crossover between two parent individuals to produce offspring.
+
+    Returns:
+        A tuple containing two new Individual objects (the offspring).
+    """
     crossover_point = random.randint(1, len(parent1.chromosome) - 2)
     child1_chromosome = parent1.chromosome[:crossover_point] + parent2.chromosome[crossover_point:]
     child2_chromosome = parent2.chromosome[:crossover_point] + parent1.chromosome[crossover_point:]
@@ -75,6 +140,13 @@ def crossover(parent1: Individual, parent2: Individual) -> Tuple[Individual, Ind
             Individual(child2_chromosome, parent2.utxos, parent2.target))
 
 def mutate(individual: Individual, mutation_rate: float = 0.01) -> None:
+    """
+    Mutates an individual's chromosome based on a given mutation rate.
+
+    Parameters:
+        individual (Individual): The individual to mutate.
+        mutation_rate (float): The probability of any given gene mutating.
+    """
     for i in range(len(individual.chromosome)):
         if random.random() < mutation_rate:
             individual.chromosome[i] = not individual.chromosome[i]
@@ -82,6 +154,12 @@ def mutate(individual: Individual, mutation_rate: float = 0.01) -> None:
 
 def genetic_coin_selection(utxos: List[UTXO], target: float, population_size: int = 100, generations: int = 100,
                            mutation_rate: float = 0.01) -> Tuple[List[UTXO], UTXO]:
+    """
+    Executes the genetic algorithm to find an optimal selection of UTXOs.
+
+    Returns:
+        A tuple of the selected UTXOs and a UTXO representing any change.
+    """
     population = initialize_population(utxos, target, population_size)
     for _ in range(generations):
         selected = select(population)

@@ -1,9 +1,23 @@
+// Script.js
+// Description: This script is designed to dynamically display transaction results and fees
+// on a web page. It handles user interactions, processes form submissions, and updates the
+// DOM with the results of transactions.
+
 console.log("Script loaded successfully");
+
+/**
+ * Displays the selected UTXOs and change UTXO within a specified DOM element.
+ * @param {Array} selectedUtxos - Array of selected UTXOs to display.
+ * @param {string} elementId - The ID of the DOM element where the UTXOs will be displayed.
+ * @param {string} algorithmName - The name of the algorithm used for selection (for future use).
+ * @param {Object} changeUtxo - The change UTXO to display, if any.
+ * @param {boolean} append - Determines if the UTXOs should be appended to existing content (unused).
+ */
 
 function displayResults(selectedUtxos, elementId, algorithmName, changeUtxo, append = false) {
     const resultsContainer = document.getElementById(elementId);
 
-    // Display selected UTXOs
+    // Iterate over selected UTXOs and create elements for each
     selectedUtxos.forEach(utxo => {
         const coin = document.createElement('div');
         coin.classList.add('coin');
@@ -11,7 +25,7 @@ function displayResults(selectedUtxos, elementId, algorithmName, changeUtxo, app
         resultsContainer.appendChild(coin);
     });
 
-    // Display change UTXO, if there is any
+    // Display change UTXO, if present
     if (changeUtxo && changeUtxo.value > 0) {
         const changeCoin = document.createElement('div');
         changeCoin.classList.add('coin', 'change');
@@ -20,6 +34,11 @@ function displayResults(selectedUtxos, elementId, algorithmName, changeUtxo, app
     }
 }
 
+/**
+ * Displays the transaction fee within a specified DOM element.
+ * @param {string} elementId - The ID of the DOM element where the fee will be displayed.
+ * @param {number} fee - The transaction fee in satoshis.
+ */
 
 function displayFee(elementId, fee) {
     const resultsContainer = document.getElementById(elementId);
@@ -37,11 +56,18 @@ function displayFee(elementId, fee) {
     resultsContainer.appendChild(feeInfo);
 }
 
+/**
+ * Formats a fee from satoshis to BTC.
+ * @param {number} feeInSatoshis - The fee in satoshis.
+ * @returns {string} - The formatted fee in satoshis and BTC.
+ */
+
 function formatFee(feeInSatoshis) {
     const feeInBTC = feeInSatoshis / 100000000; // Convert satoshis to BTC
     return `${feeInSatoshis} satoshis (${feeInBTC.toFixed(8)} BTC)`;
 }
 
+// Smooth scroll for navigation links
 document.querySelectorAll('#navigation a').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -52,10 +78,12 @@ document.querySelectorAll('#navigation a').forEach(anchor => {
     });
 });
 
+// Global variables to store UTXOs and transaction results
 let globalUTXOs = [];
 let globalSelectedUTXOsCoinxpert = [];
 let globalChangeCoinxpert = [];
 
+// Handle DOMContentLoaded event
 document.addEventListener('DOMContentLoaded', (event) => {
     // Highlight sender column
     document.getElementById('utxo-form').classList.add('highlighted-border');

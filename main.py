@@ -1,19 +1,44 @@
+"""
+Main module for CoinXpert FastAPI application.
+
+This module initializes the FastAPI app, configures routing for static files and endpoints, 
+and defines the core business logic for selecting UTXOs based on various coin selection algorithms.
+"""
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from coin_selection_algorithms import bitcoin_core_coin_selection, greedy_coin_selection, genetic_coin_selection
+
+from coin_selection_algorithms import (
+    bitcoin_core_coin_selection,
+    greedy_coin_selection,
+    genetic_coin_selection,
+)
 from utxo_models import UTXO, TransactionRequest
 from fee_calculator import calculate_transaction_fee
 
+
 app = FastAPI()
 
+# Mount static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Configure template directory for HTML responses
 templates = Jinja2Templates(directory="templates")
 
 
 @app.post("/select_utxos/")
-async def select_utxos(request: TransactionRequest):
+async def select_utxos(request: TransactionRequest) -> dict:
+    """
+    Endpoint for selecting UTXOs based on the given request.
+
+    Parameters:
+    - request (TransactionRequest): The request object containing UTXOs and target amount.
+
+    Returns:
+    - dict: A dictionary containing selected UTXOs, change UTXO, and calculated fees.
+    """
     utxos = [UTXO(utxo.value) for utxo in request.utxos]
 
     try:
@@ -49,5 +74,14 @@ async def select_utxos(request: TransactionRequest):
 
 @app.get("/", response_class=HTMLResponse)
 async def show_demo(request: Request):
+    """
+   Endpoint to serve the main HTML demo page.
+
+   Parameters:
+   - request (Request): The request object.
+
+   Returns:
+   - HTMLResponse: The main demo HTML page response.
+   """
     context = {"request": request}
     return templates.TemplateResponse("demo.html", context)
