@@ -23,6 +23,8 @@ def calculate_transaction_fee(num_inputs: int, num_outputs: int, fee_rate: int =
     Returns:
     - int: The calculated transaction fee in satoshis.
     """
+    if num_inputs < 0 or num_outputs < 0:
+        raise ValueError("Number of inputs and outputs must be non-negative")
 
     # Average sizes in bytes for transaction components
     input_size = 146  # bytes
