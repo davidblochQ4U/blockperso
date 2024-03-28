@@ -7,7 +7,7 @@ These algorithms aim to optimize transaction fees and selection efficiency.
 """
 
 
-import random
+import secrets
 from typing import List, Tuple
 from utxo_models import UTXO
 
@@ -23,16 +23,16 @@ def bitcoin_core_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[
         Tuple[List[UTXO], UTXO]: A tuple containing the list of selected UTXOs and the change UTXO.
     """
     utxos.sort(key=lambda x: x.value)
-    nTotalLower = sum(utxo.value for utxo in utxos if utxo.value < target)
-    nLowestLarger = next((utxo for utxo in reversed(utxos) if utxo.value > target), None)
+    n_total_lower = sum(utxo.value for utxo in utxos if utxo.value < target)
+    n_lowest_larger = next((utxo for utxo in reversed(utxos) if utxo.value > target), None)
     exact_match = next((utxo for utxo in utxos if utxo.value == target), None)
 
     if exact_match:
         return [exact_match], UTXO(value=0)  # Exact match found, no change needed
 
-    if nTotalLower < target:
-        if nLowestLarger:
-            return [nLowestLarger], UTXO(value=nLowestLarger.value - target)  # Use the UTXO just larger than target
+    if n_total_lower < target:
+        if n_lowest_larger:
+            return [n_lowest_larger], UTXO(value=n_lowest_larger.value - target)  # Use the UTXO just larger than target
         else:
             raise ValueError("Insufficient balance to meet target amount")
 
@@ -113,7 +113,7 @@ def initialize_population(utxos: List[UTXO], target: float, population_size: int
     Returns:
         A list of Individual objects representing the initial population.
     """
-    return [Individual([random.choice([True, False]) for _ in utxos], utxos, target) for _ in range(population_size)]
+    return [Individual([secrets.randbelow(2) > 0 for _ in utxos], utxos, target) for _ in range(population_size)]
 
 def select(population: List[Individual]) -> List[Individual]:
     """
@@ -124,7 +124,15 @@ def select(population: List[Individual]) -> List[Individual]:
     """
     population.sort(key=lambda individual: individual.fitness, reverse=True)
     survivors = population[:len(population) // 2]
-    return survivors + random.sample(population, len(population) // 2)
+
+    # Securely sample half of the population without replacement
+    sampled_indices = set()
+    while len(sampled_indices) < len(population) // 2:
+        index = secrets.randbelow(len(population))
+        sampled_indices.add(index)
+
+    sampled_population = [population[i] for i in sampled_indices]
+    return survivors + sampled_population
 
 def crossover(parent1: Individual, parent2: Individual) -> Tuple[Individual, Individual]:
     """
@@ -133,7 +141,7 @@ def crossover(parent1: Individual, parent2: Individual) -> Tuple[Individual, Ind
     Returns:
         A tuple containing two new Individual objects (the offspring).
     """
-    crossover_point = random.randint(1, len(parent1.chromosome) - 2)
+    crossover_point = secrets.randbelow(len(parent1.chromosome) - 1) + 1
     child1_chromosome = parent1.chromosome[:crossover_point] + parent2.chromosome[crossover_point:]
     child2_chromosome = parent2.chromosome[:crossover_point] + parent1.chromosome[crossover_point:]
     return (Individual(child1_chromosome, parent1.utxos, parent1.target),
@@ -148,7 +156,7 @@ def mutate(individual: Individual, mutation_rate: float = 0.01) -> None:
         mutation_rate (float): The probability of any given gene mutating.
     """
     for i in range(len(individual.chromosome)):
-        if random.random() < mutation_rate:
+        if secrets.randbelow(100) / 100.0 < mutation_rate:
             individual.chromosome[i] = not individual.chromosome[i]
 
 
