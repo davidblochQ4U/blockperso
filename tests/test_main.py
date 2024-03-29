@@ -56,15 +56,13 @@ async def test_select_utxos_genetic_exception_fallback():
     assert response.status_code == 200
     # Check if the response indicates a fallback to greedy_coin_selection
     data = response.json()
-    assert "selected_utxos_coinxpert" in data  # Assuming greedy selection returns a result
+    assert "selected_utxos_coinxpert" in data
 
 @pytest.mark.asyncio
 async def test_show_demo_content():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         response = await ac.get("/")
     assert response.status_code == 200
-    # Example: Look for a specific ID or text that is rendered using the context
-    assert 'id="navbar"' in response.text  # Assuming your demo.html has this ID
-    # If your template uses {{ request.path }} or similar context variables, check for their presence
-    assert "/static/" in response.text  # Assuming static files are linked in demo.html
+    assert 'id="navbar"' in response.text
+    assert "/static/" in response.text
 
