@@ -19,7 +19,6 @@ async def test_select_utxos():
     data = response.json()
     assert "selected_utxos_core" in data
     assert "fee_btc_core" in data
-    # Add more assertions based on expected response structure
 
 @pytest.mark.asyncio
 async def test_select_utxos_insufficient_funds():
@@ -35,8 +34,37 @@ async def test_select_utxos_insufficient_funds():
     assert "detail" in response.json()
 
 @pytest.mark.asyncio
-async def test_show_demo():
+async def test_select_utxos_bitcoin_core_value_error():
+    # Payload designed to trigger ValueError in bitcoin_core_coin_selection
+    request_payload = {
+        "utxos": [{"value": 0.5}],  # Use a setup that you know will fail
+        "target": 10
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/select_utxos/", json=request_payload)
+    assert response.status_code == 400
+    assert "detail" in response.json()  # The detail should be the ValueError message
+
+async def test_select_utxos_genetic_exception_fallback():
+    # Use a valid setup that would normally not raise an exception
+    request_payload = {
+        "utxos": [{"value": 1}, {"value": 2}, {"value": 3}],
+        "target": 5
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/select_utxos/", json=request_payload)
+    assert response.status_code == 200
+    # Check if the response indicates a fallback to greedy_coin_selection
+    data = response.json()
+    assert "selected_utxos_coinxpert" in data  # Assuming greedy selection returns a result
+
+@pytest.mark.asyncio
+async def test_show_demo_content():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
         response = await ac.get("/")
     assert response.status_code == 200
-    assert "<html" in response.text
+    # Example: Look for a specific ID or text that is rendered using the context
+    assert 'id="navbar"' in response.text  # Assuming your demo.html has this ID
+    # If your template uses {{ request.path }} or similar context variables, check for their presence
+    assert "/static/" in response.text  # Assuming static files are linked in demo.html
+

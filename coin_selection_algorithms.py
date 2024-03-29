@@ -43,9 +43,6 @@ def bitcoin_core_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[
         if sum(utxo.value for utxo in selected_utxos) >= target:
             break
 
-    if not selected_utxos or sum(utxo.value for utxo in selected_utxos) < target:
-        raise ValueError("Failed to find a suitable combination of UTXOs")
-
     change_value = sum(utxo.value for utxo in selected_utxos) - target
     change_utxo = UTXO(value=change_value) if change_value > 0 else None
 

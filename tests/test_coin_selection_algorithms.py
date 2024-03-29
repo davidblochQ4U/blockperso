@@ -32,7 +32,7 @@ def test_bitcoin_core_coin_selection(sample_utxos):
         bitcoin_core_coin_selection(sample_utxos, 100)
 
 def test_bitcoin_core_n_lowest_larger(sample_utxos):
-    new_target = 11  # Choose a target that forces the use of the UTXO with value 10 as the only solution
+    new_target = 9  # Choose a target that forces the use of the UTXO with value 10 as the only solution
     selected_utxos, change_utxo = bitcoin_core_coin_selection(sample_utxos, new_target)
     assert len(selected_utxos) == 1
     assert selected_utxos[0].value > new_target
@@ -70,15 +70,16 @@ def test_crossover(mock_randint, sample_utxos):
     assert child1.chromosome[2:] == population[1].chromosome[2:]
     assert child2.chromosome[2:] == population[0].chromosome[2:]
 
-@patch('random.random', side_effect=[0.01, 0.99, 0.01, 0.99])
 def test_mutate(sample_utxos):
+    print(sample_utxos)
     individual = initialize_population(sample_utxos, 7, 1)[0]
     original_chromosome = individual.chromosome.copy()
-    # Call mutate without trying to control the randomness
     mutate(individual, mutation_rate=1)  # Set high to ensure mutation
     # Check that at least one gene has been mutated
     assert individual.chromosome != original_chromosome
-
+    # Additionally, you can check if all genes are flipped since mutation_rate is 1
+    for original, mutated in zip(original_chromosome, individual.chromosome):
+        assert original != mutated
 
 # Test the full genetic coin selection algorithm
 def test_genetic_coin_selection(sample_utxos):
