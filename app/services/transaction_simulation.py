@@ -21,14 +21,19 @@ def simulate_transaction(sender: Wallet, receiver: Wallet, amount: int, selectio
     - bool: True if the transaction was successful, False otherwise (e.g., insufficient funds).
     """
 
-    selected_utxos, _ = selection_method(sender.utxos, amount)
+    selected_utxos, change = selection_method(sender.utxos, amount)
     if not selected_utxos:
-        # Transaction failed due to insufficient funds.
-        return False
+        return False  # Insufficient funds
 
-    # Remove selected UTXOs from the sender's wallet and add the net amount to the receiver's wallet.
-    sender.remove_utxos(selected_utxos)
-    receiver.add_utxo(sum(utxo.value for utxo in selected_utxos) - amount)  # Simplified
+    # Remove selected UTXOs from sender
+    for utxo in selected_utxos:
+        sender.remove_utxo(utxo)
 
-    # The transaction is deemed successful.
+    # Add the amount to receiver's UTXOs
+    receiver.add_utxo(amount)
+
+    # Handle change if any
+    if change:
+        sender.add_utxo(change)
+
     return True

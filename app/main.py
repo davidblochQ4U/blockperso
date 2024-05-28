@@ -9,6 +9,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from app.routers import demo, ml_model
+import os
 
 from app.services.coin_selection_algorithms import (
     bitcoin_core_coin_selection,
@@ -22,11 +24,15 @@ from app.services.fee_calculator import calculate_transaction_fee
 app = FastAPI()
 
 # Mount static files directory
-app.mount("/static", StaticFiles(directory="static"), name="static")
+static_files_path = os.path.join(os.path.dirname(__file__), "../webapp_demo/static")
+app.mount("/static", StaticFiles(directory=static_files_path), name="static")
 
 # Configure template directory for HTML responses
-templates = Jinja2Templates(directory="templates")
+templates_path = os.path.join(os.path.dirname(__file__), "../webapp_demo/templates")
+templates = Jinja2Templates(directory=templates_path)
 
+app.include_router(demo.router, prefix="/demo", tags=["demo"])
+app.include_router(ml_model.router, prefix="/ml_model", tags=["ml_model"])
 
 @app.post("/select_utxos/")
 async def select_utxos(request: TransactionRequest) -> dict:

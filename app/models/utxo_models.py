@@ -46,7 +46,7 @@ class Wallet:
         utxos (List[UTXO]): A list of UTXOs in the wallet.
     """
     def __init__(self, utxos=[]):
-        self.utxos = utxos
+        self.utxos = utxos if utxos is not None else []
 
     def add_utxo(self, utxo):
         """
@@ -57,14 +57,14 @@ class Wallet:
         """
         self.utxos.append(utxo)
 
-    def remove_utxos(self, utxos_to_remove):
+    def remove_utxo(self, utxo_to_remove):
         """
         Removes specified UTXOs from the wallet.
 
         Parameters:
             utxos_to_remove (List[UTXO]): The UTXOs to be removed.
         """
-        self.utxos = [utxo for utxo in self.utxos if utxo not in utxos_to_remove]
+        self.utxos.remove(utxo_to_remove)
 
     def get_balance(self):
         """
