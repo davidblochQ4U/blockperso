@@ -26,23 +26,24 @@ RUN mkdir /opt/rh/rh-python38 -p && ln -s /opt/middleware/redhat_python/3.8.0 /o
 RUN python -V && python -m venv $VIRTUALENV_HOME && source $VIRTUALENV_HOME/bin/activate
 
 # Install dependencies
-COPY pip.conf requirements.txt ./requirements.txt
+COPY pip.conf /app/pip.conf
+COPY requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Switch to the non-root user
 USER appuser
 
 # Copy the application scripts
-COPY app/ app/
+COPY app/ /app/app/
 
 # Copy static files and templates
-COPY webapp_demo/static/ static/
-COPY webapp_demo/templates/ templates/
+COPY webapp_demo/static/ /app/static/
+COPY webapp_demo/templates/ /app/templates/
 
 # Copy any required configurations
-COPY requirements_tests.txt ./requirements_tests.txt
-COPY .dockerignore .dockerignore
+COPY requirements_tests.txt /app/requirements_tests.txt
+COPY .dockerignore /app/.dockerignore
 
 # Setup runtime
 USER root
