@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
-from transaction_simulation import simulate_transaction
-from utxo_models import Wallet, UTXO
+from app.services.transaction_simulation import simulate_transaction
+from app.models.utxo_models import Wallet, UTXO
 
 @pytest.fixture
 def setup_wallets():

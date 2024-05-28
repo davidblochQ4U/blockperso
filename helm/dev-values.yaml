@@ -1,0 +1,9 @@
+APP_NAME: CoinXpert
+CPU_LIMIT: 500m
+CPU_REQUESTS: 100m
+HEALTH_CHECK_ENDPOINT: /docs
+HOSTNAME_HTTP: icg-msst-e4-coinxpert-175873.apps.namicggtd66d.ecs.dyn.nsroot.net
+MEMORY_LIMIT: 500Mi
+MEMORY_REQUESTS: 100Mi
+PORT: 8080
+

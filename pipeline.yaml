@@ -1,0 +1,9 @@
+version: v1
+tasks:
+  - ref: python-build
+  - ref: container-image-build
+    runAfter:
+      - python-build
+  - ref: helm-chart-publish
+    runAfter:
+      - container-image-build

@@ -1,5 +1,5 @@
 import pytest
-from utxo_models import UTXO, UTXOModel, TransactionRequest, Wallet
+from app.models.utxo_models import UTXO, UTXOModel, TransactionRequest, Wallet
 
 def test_utxo_initialization():
     utxo = UTXO(value=10.5)

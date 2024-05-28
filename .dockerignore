@@ -1,0 +1,35 @@
+# Ignore Python cache files
+__pycache__
+*.pyc
+*.pyo
+
+# Ignore virtual environment directories
+venv/
+env/
+ENV/
+venv.bak/
+env.bak/
+
+# Ignore version control directories
+.git/
+.gitignore
+
+# Ignore PyCharm project files
+.idea/
+
+# Ignore test-related files and directories
+.pytest_cache/
+tests/__pycache__/
+
+# Ignore other IDE and editor specific files
+.vscode/
+.DS_Store
+
+# Ignore config and data files
+.env
+*.log
+*.sqlite3
+
+# Ignore unnecessary files
+*.bak
+*.tmp

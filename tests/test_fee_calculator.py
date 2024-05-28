@@ -1,5 +1,5 @@
 import pytest
-from fee_calculator import calculate_transaction_fee
+from app.services.fee_calculator import calculate_transaction_fee
 
 def test_calculate_transaction_fee():
     # Test with positive numbers of inputs and outputs
