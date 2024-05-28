@@ -1,0 +1,18 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+id: "{{ .Values.APP_NAME }}-http"
+metadata:
+  name: "{{ .Values.APP_NAME }}"
+  labels:
+    app: "{{ .Values.APP_NAME }}"
+  annotations:
+    description: Route for application's http service.
+    haproxy.router.openshift.io/timeout: 20m
+spec:
+  host: "{{ .Values.HOSTNAME_HTTP }}"
+  port:
+    targetPort: https-{{ .Values.PORT }}
+  tls:
+    termination: edge
+  to:
+    name: "{{ .Values.APP_NAME }}"

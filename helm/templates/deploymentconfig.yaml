@@ -1,0 +1,62 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: "{{ .Values.APP_NAME }}"
+  labels:
+    app: "{{ .Values.APP_NAME }}"
+spec:
+  strategy:
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 480
+      maxSurge: "50%"
+      maxUnavailable: "50%"
+    type: Rolling
+  triggers:
+  replicas: 1
+  revisionHistoryLimit: 10
+  test: false
+  selector:
+    deploymentConfig: "{{ .Values.APP_NAME }}"
+  template:
+    metadata:
+      name: "{{ .Values.APP_NAME }}"
+      labels:
+        deploymentConfig: "{{ .Values.APP_NAME }}"
+        app: "{{ .Values.APP_NAME }}"
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: "{{ .Values.APP_NAME }}"
+          image: {{ .Values.lsImageBase }}:{{ .Chart.AppVersion }}
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 50
+            httpGet:
+              path: "{{ .Values.HEALTH_CHECK_ENDPOINT }}"
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 60
+          readinessProbe:
+            failureThreshold: 50
+            httpGet:
+              path: "{{ .Values.HEALTH_CHECK_ENDPOINT }}"
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 20
+            successThreshold: 1
+            timeoutSeconds: 60
+          resources:
+            requests:
+              memory: {{ .Values.MEMORY_REQUESTS }}
+              cpu: {{ .Values.CPU_REQUESTS }}
+            limits:
+              memory: {{ .Values.MEMORY_LIMIT }}
+              cpu: {{ .Values.CPU_LIMIT }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP

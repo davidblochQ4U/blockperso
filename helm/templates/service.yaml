@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+spec:
+  ports:
+    - name: https-{{ .Values.PORT }}
+      port: {{ .Values.PORT }}
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    deploymentConfig: "{{ .Values.APP_NAME }}"
+metadata:
+  name: "{{ .Values.APP_NAME }}"
+  labels:
+    app: "{{ .Values.APP_NAME }}"
+  annotations:
+    description: The application's http port.
+

@@ -1,5 +1,5 @@
 import pytest
-from utxo_models import UTXO, UTXOModel, TransactionRequest, Wallet
+from app.models.utxo_models import UTXO, UTXOModel, TransactionRequest, Wallet
 
 def test_utxo_initialization():
     utxo = UTXO(value=10.5)
@@ -31,11 +31,11 @@ def test_wallet_add_utxo():
     assert len(wallet.utxos) == 1
     assert wallet.get_balance() == 5
 
-def test_wallet_remove_utxos():
+def test_wallet_remove_utxo():
     utxo1 = UTXO(value=1)
     utxo2 = UTXO(value=2)
     wallet = Wallet(utxos=[utxo1, utxo2])
-    wallet.remove_utxos([utxo1])
+    wallet.remove_utxo(utxo1)
     assert len(wallet.utxos) == 1
     assert wallet.get_balance() == 2
 

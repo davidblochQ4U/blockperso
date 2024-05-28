@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from coin_selection_algorithms import (
+from app.services.coin_selection_algorithms import (
     bitcoin_core_coin_selection,
     greedy_coin_selection,
     genetic_coin_selection,
@@ -9,7 +9,7 @@ from coin_selection_algorithms import (
     crossover,
     mutate
 )
-from utxo_models import UTXO
+from app.models.utxo_models import UTXO
 
 @pytest.fixture
 def sample_utxos():
