@@ -26,31 +26,20 @@ RUN mkdir /opt/rh/rh-python38 -p && ln -s /opt/middleware/redhat_python/3.8.0 /o
 RUN python -V && python -m venv $VIRTUALENV_HOME && source $VIRTUALENV_HOME/bin/activate
 
 # Install dependencies
-COPY pip.conf /app/pip.conf
-COPY requirements.txt /app/requirements.txt
+COPY pip.conf requirements.txt requirements_tests.txt /app/
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Switch to the non-root user
-USER appuser
-
-# Copy the application scripts
-COPY app/ /app/app/
-
-# Copy static files and templates
-COPY webapp_demo/static/ /app/static/
-COPY webapp_demo/templates/ /app/templates/
-
-# Copy any required configurations
-COPY requirements_tests.txt /app/requirements_tests.txt
-COPY .dockerignore /app/.dockerignore
+# Copy the application scripts and other files
+COPY . /app/
 
 # Setup runtime
 USER root
-RUN chmod -R g+rwx .
+RUN chmod -R g+rwx /app
 EXPOSE 8080
-# CMD ["sleep", "600"]
-# -w 2  : specifies number of worker class to use
-# -t 120 : specifies the maximum request processing time in seconds. If request takes longer it is terminated by gunicorn
-CMD export HOME=$APP_HOME && gunicorn main_service:app -b 0.0.0.0:8080  -w 1 -k uvicorn.workers.UvicornWorker -t 6000
+
+# Use ENTRYPOINT for the main container process
+ENTRYPOINT ["gunicorn", "app.main:app", "-b", "0.0.0.0:8080", "-w", "1", "-k", "uvicorn.workers.UvicornWorker", "-t", "6000"]
+
+# Switch to the non-root user for running the application
 USER appuser
