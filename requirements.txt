@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+numpy
+pandas
+scikit-learn
+pytest
+pytest-asyncio
+requests
+httpx
+pytest-cov
+pydantic
