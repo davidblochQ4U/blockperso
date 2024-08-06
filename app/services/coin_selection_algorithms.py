@@ -7,7 +7,7 @@ These algorithms aim to optimize transaction fees and selection efficiency.
 """
 
 
-import secrets
+import secrets, random
 from typing import List, Tuple
 from app.models.utxo_models import UTXO
 
@@ -23,31 +23,55 @@ def bitcoin_core_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[
         Tuple[List[UTXO], UTXO]: A tuple containing the list of selected UTXOs and the change UTXO.
     """
     utxos.sort(key=lambda x: x.value)
-    n_total_lower = sum(utxo.value for utxo in utxos if utxo.value < target)
-    n_lowest_larger = next((utxo for utxo in reversed(utxos) if utxo.value > target), None)
-    exact_match = next((utxo for utxo in utxos if utxo.value == target), None)
 
+    # Step 1: Exact match
+    exact_match = next((utxo for utxo in utxos if utxo.value == target), None)
     if exact_match:
         return [exact_match], UTXO(value=0)  # Exact match found, no change needed
 
-    if n_total_lower < target:
-        if n_lowest_larger:
-            return [n_lowest_larger], UTXO(value=n_lowest_larger.value - target)  # Use the UTXO just larger than target
+    # Step 2: Sum of UTXOs smaller than the target matches the target
+    small_utxos = [utxo for utxo in utxos if utxo.value < target]
+    total_small_utxos = sum(utxo.value for utxo in small_utxos)
+    if total_small_utxos == target:
+        return small_utxos, UTXO(value=0)  # Exact match with smaller UTXOs, no change needed
+
+    # Step 3: Use the smallest UTXO greater than the target if sum of small UTXOs is insufficient
+    if total_small_utxos < target:
+        smallest_larger_utxo = next((utxo for utxo in utxos if utxo.value > target), None)
+        if smallest_larger_utxo:
+            return [smallest_larger_utxo], UTXO(value=smallest_larger_utxo.value - target)
         else:
             raise ValueError("Insufficient balance to meet target amount")
 
-    selected_utxos = []
-    for _ in range(50):  # Random approximation attempts
-        # This is a simplified version, actual implementation should randomly select UTXOs
-        selected_utxos = [utxo for utxo in utxos if utxo.value < target]  # Placeholder for random selection logic
-        if sum(utxo.value for utxo in selected_utxos) >= target:
-            break
+    # Step 4: Random combinations of UTXOs to find a match
+    min_combination = None
+    min_combination_value = float('inf')
+    for _ in range(1000):
+        random.shuffle(utxos)
+        combination = []
+        combination_value = 0
+        for utxo in utxos:
+            if combination_value >= target:
+                break
+            combination.append(utxo)
+            combination_value += utxo.value
+        if combination_value == target:
+            return combination, UTXO(value=0)
+        if target <= combination_value < min_combination_value:
+            min_combination = combination
+            min_combination_value = combination_value
 
-    change_value = sum(utxo.value for utxo in selected_utxos) - target
-    change_utxo = UTXO(value=change_value) if change_value > 0 else None
+    # Step 5: Settle for the best option
+    smallest_larger_utxo = next((utxo for utxo in utxos if utxo.value > target), None)
+    if smallest_larger_utxo and min_combination:
+        if smallest_larger_utxo.value < min_combination_value:
+            return [smallest_larger_utxo], UTXO(value=smallest_larger_utxo.value - target)
+    if min_combination:
+        change_value = min_combination_value - target
+        change_utxo = UTXO(value=change_value) if change_value > 0 else None
+        return min_combination, change_utxo
 
-    return selected_utxos, change_utxo
-
+    raise ValueError("Insufficient balance to meet target amount")
 
 def greedy_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[UTXO], UTXO]:
     """
