@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+Jinja2
 numpy
 pandas
 scikit-learn
