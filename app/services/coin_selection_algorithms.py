@@ -9,6 +9,7 @@ These algorithms aim to optimize transaction fees and selection efficiency.
 import secrets, random
 from typing import List, Tuple
 from app.models.utxo_models import UTXO
+from app.config import DUST_THRESHOLD, GA_POPULATION_SIZE, GA_CROSSOVER_PROB, GA_MUTATION_PROB, GA_TERMINATION_GEN
 
 
 def bitcoin_core_coin_selection(utxos: List[UTXO], target: float) -> Tuple[List[UTXO], UTXO]:
@@ -252,9 +253,9 @@ def mutate(individual: Individual, mutation_rate: float, current_generation: int
     new_mutation_rate = mutation_rate * (1 - 1 / (max_generations + 1 - current_generation))
     return new_mutation_rate
 
-
-def genetic_coin_selection(utxos: List[UTXO], target: float, dust_threshold: float, population_size: int = 200,
-                           generations: int = 2000, crossover_rate: float = 0.5, mutation_rate: float = 0.01) \
+def genetic_coin_selection(utxos: List[UTXO], target: float, dust_threshold: float,
+                           population_size: int = GA_POPULATION_SIZE, generations: int = GA_TERMINATION_GEN,
+                           crossover_rate: float = GA_CROSSOVER_PROB, mutation_rate: float = GA_MUTATION_PROB) \
         -> Tuple[List[UTXO], UTXO]:
     """
     Executes the genetic algorithm to find an optimal selection of UTXOs.
@@ -295,7 +296,8 @@ def genetic_coin_selection(utxos: List[UTXO], target: float, dust_threshold: flo
     return selected_utxos, change_utxo
 
 
-def execute_coin_selection(utxos: List[UTXO], target: float, dust_threshold: float) -> Tuple[List[UTXO], UTXO]:
+def execute_coin_selection(utxos: List[UTXO], target: float, dust_threshold: float = DUST_THRESHOLD) -> (
+        Tuple)[List[UTXO], UTXO]:
     """
        Executes the entire process of coin selection using a combination of Greedy, and Genetic algorithms.
        1. Sorts UTXOs in ascending order.

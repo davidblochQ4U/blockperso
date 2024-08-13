@@ -1,9 +1,14 @@
 // Script.js
-// Description: This script is designed to dynamically display transaction results and fees
-// on a web page. It handles user interactions, processes form submissions, and updates the
-// DOM with the results of transactions.
+// Description: This script is designed to dynamically display transaction results and fees on a web page.
+// It handles user interactions, processes form submissions, and updates the DOM with the results of transactions.
 
 console.log("Script loaded successfully");
+
+// Utility function for formatting numbers up to 4 decimal places
+function formatNumber(value) {
+    return value.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 });
+}
+
 
 /**
  * Displays the selected UTXOs and change UTXO within a specified DOM element.
@@ -21,7 +26,7 @@ function displayResults(selectedUtxos, elementId, algorithmName, changeUtxo, app
     selectedUtxos.forEach(utxo => {
         const coin = document.createElement('div');
         coin.classList.add('coin');
-        coin.textContent = `${utxo.value} BTC`; // Assuming utxo.value is a number
+        coin.textContent = `${formatNumber(utxo.value)} BTC`; // Assuming utxo.value is a number
         resultsContainer.appendChild(coin);
     });
 
@@ -29,7 +34,7 @@ function displayResults(selectedUtxos, elementId, algorithmName, changeUtxo, app
     if (changeUtxo && changeUtxo.value > 0) {
         const changeCoin = document.createElement('div');
         changeCoin.classList.add('coin', 'change');
-        changeCoin.textContent = `${changeUtxo.value} BTC`;
+        changeCoin.textContent = `${formatNumber(changeUtxo.value)} BTC`;
         resultsContainer.appendChild(changeCoin);
     }
 }
@@ -64,7 +69,7 @@ function displayFee(elementId, fee) {
 
 function formatFee(feeInSatoshis) {
     const feeInBTC = feeInSatoshis / 100000000; // Convert satoshis to BTC
-    return `${feeInSatoshis} satoshis (${feeInBTC.toFixed(8)} BTC)`;
+    return `${feeInSatoshis} satoshis (${formatNumber(feeInBTC)} BTC)`;
 }
 
 // Smooth scroll for navigation links
@@ -104,7 +109,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         globalUTXOs.forEach(value => {
             const coin = document.createElement('div');
             coin.classList.add('coin');
-            coin.textContent = `${value} BTC`;
+            coin.textContent = `${formatNumber(value)} BTC`;
             wallet.appendChild(coin);
         });
 
@@ -232,7 +237,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // Re-add coins that weren't used in the transaction
             const coin = document.createElement('div');
             coin.classList.add('coin');
-            coin.textContent = `${utxo.value} BTC`;
+            coin.textContent = `${formatNumber(utxo.value)} BTC`;
             senderWallet.appendChild(coin);
         });
 
@@ -240,7 +245,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // Add the change UTXO as a gray coin
             const changeCoin = document.createElement('div');
             changeCoin.classList.add('change');
-            changeCoin.textContent = `${changeUtxo.value} BTC`;
+            changeCoin.textContent = `${formatNumber(changeUtxo.value)} BTC`;
             senderWallet.appendChild(changeCoin);
         }
 

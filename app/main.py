@@ -12,11 +12,7 @@ from fastapi.templating import Jinja2Templates
 from app.routers import demo, ml_model
 import os
 
-from app.services.coin_selection_algorithms import (
-    bitcoin_core_coin_selection,
-    greedy_coin_selection,
-    genetic_coin_selection,
-)
+from app.services.coin_selection_algorithms import bitcoin_core_coin_selection, execute_coin_selection
 from app.models.utxo_models import UTXO, TransactionRequest
 from app.services.fee_calculator import calculate_transaction_fee
 
@@ -53,10 +49,9 @@ async def select_utxos(request: TransactionRequest) -> dict:
         raise HTTPException(status_code=400, detail=str(e))
 
     try:
-        selected_utxos_coinxpert, change_utxo_coinxpert = genetic_coin_selection(utxos, request.target)
+        selected_utxos_coinxpert, change_utxo_coinxpert = execute_coin_selection(utxos, request.target)
     except Exception as e:
-        print(e)
-        selected_utxos_coinxpert, change_utxo_coinxpert = greedy_coin_selection(utxos, request.target)
+        raise HTTPException(status_code=400, detail=str(e))
 
     # Assuming one output for the recipient and one for change
     nb_output = lambda x: 2 if x else 1

@@ -5,9 +5,9 @@ This module contains a function to calculate the transaction fee for Bitcoin
 transactions based on the number of inputs and outputs. The fee is determined by the total
 size of the transaction, with a given fee rate in satoshis per byte.
 """
+from app.config import FEE_RATE, INPUT_SIZE, OUTPUT_SIZE, BASE_SIZE
 
-
-def calculate_transaction_fee(num_inputs: int, num_outputs: int, fee_rate: int = 20) -> int:
+def calculate_transaction_fee(num_inputs: int, num_outputs: int, fee_rate: int = FEE_RATE) -> int:
     """
     Calculates the fee for a Bitcoin transaction.
 
@@ -26,13 +26,9 @@ def calculate_transaction_fee(num_inputs: int, num_outputs: int, fee_rate: int =
     if num_inputs < 0 or num_outputs < 0:
         raise ValueError("Number of inputs and outputs must be non-negative")
 
-    # Average sizes in bytes for transaction components
-    input_size = 146  # bytes
-    output_size = 34  # bytes
-    base_size = 10  # bytes
-
-    # Calculate the total transaction size
-    transaction_size = num_inputs * input_size + num_outputs * output_size + base_size
+    # Calculate the total transaction size in vbytes
+    weight = (num_inputs * INPUT_SIZE + num_outputs * OUTPUT_SIZE + BASE_SIZE) * 3 + num_inputs * 1
+    transaction_size_vbytes = weight / 4
 
     # Calculate and return the transaction fee
-    return transaction_size * fee_rate
+    return int(transaction_size_vbytes * fee_rate)
