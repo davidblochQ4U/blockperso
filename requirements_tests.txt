@@ -1,6 +1,0 @@
-pytest
-pytest-asyncio
-requests
-httpx
-pytest-cov
-pydantic
