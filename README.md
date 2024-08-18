@@ -1,115 +1,53 @@
-# CoinXpert - Transaction Fees Optimizer
+# CoinXpert: AI/ML Dynamic Fee Prediction
 
-CoinXpert is an API designed to optimize transaction fees for UTXOs based systems like Bitcoin through advanced Coin Selection. It leverages various coin selection algorithms to minimize transaction fees while ensuring transactions are processed efficiently.
+## Overview
+
+This branch focuses on developing a machine learning model for dynamic fee prediction within the CoinXpert API. The goal is to optimize transaction fees based on current network conditions, leveraging historical data and advanced algorithms to provide real-time fee estimates.
 
 ## Features
 
-- **UTXO Selection Algorithms**: Implements multiple strategies for UTXO selection to optimize transaction fees.
-- **FastAPI Backend**: Utilizes FastAPI for efficient backend processing and API management.
-- **Dynamic Frontend**: Offers a dynamic and interactive web interface for simulating transactions and visualizing the impact of different coin selection algorithms on transaction fees.
-- **Transaction Simulation**: Enables users to input custom UTXOs and target transaction amounts for simulation.
-- **Fee Calculation**: Calculates transaction fees based on selected UTXOs and provides comparisons between different selection algorithms.
+- **Data Retrieval**: Integration with data sources such as blockchain-etl/bitcoin-etl using Google Cloud BigQuery to build a robust dataset for model training.
+- **Feature Engineering**: Extract and preprocess features relevant to transaction fees.
+- **Model Training**: Implement and train machine learning models for fee prediction.
+- **Hyperparameter Tuning**: Optimize model performance through systematic tuning.
+- **Monitoring**: Continuous monitoring and evaluation of model performance using tools like MLflow and Prometheus.
+- **API Integration**: Seamless integration of the ML model with the existing CoinXpert API.
 
-## Installation
+## Getting Started
 
-To set up CoinXpert on your local machine, follow these steps:
+### Prerequisites
 
-1. Ensure you have Python 3.9+ installed on your system.
-2. Clone this repository to your local machine.
-   ```sh
-   git clone ssh://git@cedt-icg-bitbucketcli.nam.nsroot.net:7999/e4-coinxpert-175873/coinxpert.git
-   cd coinxpert
-   ```
-3. Install the required Python packages by running:
-   ```sh
-   pip install -r requirements.txt
-   ```
+- Python 3.8+
+- Sklearn (for ML models)
+- FastAPI
+- MLflow
+- Prometheus/Grafana
 
-## Requirements
+### Installation
 
-Refer to `requirements.txt` for a complete list of dependencies.
+Clone the repository and switch to the `ml-fee-prediction` branch:
 
-## Usage
-
-1. Start the FastAPI server by executing:
-   ```sh
-   uvicorn app.main:app --reload
-   ```
-2. Open a web browser and navigate to `http://127.0.0.1:8000` to access the CoinXpert interface.
-3. Follow the on-screen instructions to simulate transactions and view the results of different coin selection algorithms.
-
-## Project Structure
-
-```plaintext
-coinxpert/
-├── app/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── main.py
-│   ├── routers/
-│   │   ├── __init__.py
-│   │   ├── demo.py
-│   │   ├── ml_model.py
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   ├── db.py
-│   │   ├── logging.py
-│   │   ├── monitoring.py
-│   │   ├── security.py
-│   ├── data/
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── ml_models.py
-│   │   ├── utxo_models.py
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── coin_selection_algorithms.py
-│   │   ├── fee_calculator.py
-│   │   ├── ml_model_service.py
-│   │   ├── transaction_simulation.py
-├── helm/
-│   ├── Chart.yaml
-│   ├── dev-values.yaml
-│   ├── templates/
-│   │   ├── deploymentconfig.yaml
-│   │   ├── route.yaml
-│   │   ├── service.yaml
-│   ├── values.yaml
-├── tests/
-│   ├── __init__.py
-│   ├── test_coin_selection_algorithms.py
-│   ├── test_fee_calculator.py
-│   ├── test_main.py
-│   ├── test_ml_model_service.py
-│   ├── test_transaction_simulation.py
-│   ├── test_utxo_models.py
-├── webapp_demo/
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── static/
-│   │   ├── Dockerfile
-│   │   ├── script.js
-│   │   ├── style.css
-│   │   ├── images/
-│   │       ├── btc_wallet.png
-│   │       ├── coinxpert_logo.png
-│   ├── templates/
-│       ├── demo.html
-├── .dockerignore
-├── .gitignore
-├── Dockerfile
-├── pipeline.yaml
-├── README.md
-├── requirement.txt
-├── requirements_tests.txt
+```bash
+git clone https://cedt-icg-bitbucket.nam.nsroot.net/bitbucket/projects/E4-COINXPERT-175873/repos/coinxpert/browse
+cd coinxpert
+git checkout ai-ml-fee-prediction
 ```
+Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
+## Running the Project
+
+- Data Retrieval: Fetch the required data using the provided scripts in the data directory.
+- Model Training: Execute the train_model.py script to train the model on the retrieved dataset.
+- API Integration: Use the main.py script to run the CoinXpert API with the integrated ML model.
 
 ## Contributing
-
-Contributions to CoinXpert are welcome.
+We welcome contributions to improve the fee prediction model or integrate new features.
 
 ## Contact
-
 For any inquiries or issues, please contact the maintainer.
 
 Maintainer: David Bloch (db48046)
+
+
