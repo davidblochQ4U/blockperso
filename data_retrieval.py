@@ -1,19 +1,23 @@
-from google.cloud import bigquery
 import pandas as pd
+from google.cloud import bigquery
 
-# Initialize BigQuery client
-client = bigquery.Client()
 
-# Query
-query = """
-SELECT *
-FROM `bigquery-public-data.crypto_bitcoin.transactions`
-LIMIT 10000000
-"""
+def retrieve_data (query: str, output_csv: str):
+    client = bigquery.Client()
+    query_job = client.query(query)
+    results = query_job.result()
 
-# Execute query and convert to dataframe
-query_job = client.query(query)
-df = query_job.to_dataframe()
+    # Convert results to DataFrame and save as CSV
+    df = results.to_dataframe()
+    df.to_csv(output_csv, index=False)
+    print(f"Data saved to {output_csv}")
 
-# Save to CSV
-df.to_csv('transactions_50M.csv', index=False)
+
+if __name__ == "__main__":
+    query = """
+    SELECT *
+    FROM `bigquery-public-data.crypto_bitcoin.transactions`
+    LIMIT 500000
+    """
+    output_csv = "transactions.csv"
+    retrieve_data(query, output_csv)
