@@ -200,7 +200,7 @@ def select(population: List[Individual]) -> List[Individual]:
     return selected_individuals
 
 
-def crossover(parent1: Individual, parent2: Individual, crossover_rate: float) -> Tuple[Individual, Individual]:
+def crossover (parent1: Individual, parent2: Individual, crossover_rate: float) -> Tuple[Individual, Individual]:
     """
     Performs a crossover between two parent individuals to produce offspring.
 
@@ -218,12 +218,16 @@ def crossover(parent1: Individual, parent2: Individual, crossover_rate: float) -
     r = secrets.randbelow(100) / 100.0
     if r < crossover_rate:
         crossover_point = secrets.randbelow(len(parent1.chromosome) - 1) + 1
+
+        # Properly swap segments after crossover point
         child1_chromosome = parent1.chromosome[:crossover_point] + parent2.chromosome[crossover_point:]
         child2_chromosome = parent2.chromosome[:crossover_point] + parent1.chromosome[crossover_point:]
     else:
+        # If crossover doesn't happen, children are exact copies of parents
         child1_chromosome = parent1.chromosome[:]
         child2_chromosome = parent2.chromosome[:]
 
+    # Return the offspring as new individuals
     return (Individual(child1_chromosome, parent1.utxos, parent1.target, parent1.dust_threshold),
             Individual(child2_chromosome, parent2.utxos, parent2.target, parent2.dust_threshold))
 

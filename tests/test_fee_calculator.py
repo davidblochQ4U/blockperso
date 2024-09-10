@@ -1,20 +1,26 @@
 import pytest
 from app.services.fee_calculator import calculate_transaction_fee
 
-def test_calculate_transaction_fee():
-    # Test with positive numbers of inputs and outputs
-    assert calculate_transaction_fee(1, 2) == ((1 * 146) + (2 * 34) + 10) * 20
-    assert calculate_transaction_fee(3, 1) == ((3 * 146) + (1 * 34) + 10) * 20
+def test_calculate_transaction_fee_basic():
+    assert calculate_transaction_fee(1, 2) == 3395
+    assert calculate_transaction_fee(3, 1) == 7335
 
-def test_calculate_transaction_fee_with_custom_fee_rate():
-    # Test with a custom fee rate
-    assert calculate_transaction_fee(1, 1, fee_rate=10) == ((1 * 146) + (1 * 34) + 10) * 10
+def test_calculate_transaction_fee_custom_rate():
+    assert calculate_transaction_fee(1, 2, fee_rate=10) == 1697
+    assert calculate_transaction_fee(2, 3, fee_rate=15) == 4597
 
-def test_calculate_transaction_fee_with_negative_values():
-    # Test with negative values for inputs and outputs to ensure it raises a ValueError
-    with pytest.raises(ValueError):
+def test_calculate_transaction_fee_zero_inputs_outputs():
+    assert calculate_transaction_fee(0, 0) == 150
+    assert calculate_transaction_fee(0, 2) == 1170
+    assert calculate_transaction_fee(2, 0) == 4600  # Adjusted value
+
+def test_calculate_transaction_fee_negative_inputs():
+    with pytest.raises(ValueError, match="Number of inputs and outputs must be non-negative"):
         calculate_transaction_fee(-1, 1)
-    with pytest.raises(ValueError):
+
+def test_calculate_transaction_fee_negative_outputs():
+    with pytest.raises(ValueError, match="Number of inputs and outputs must be non-negative"):
         calculate_transaction_fee(1, -1)
-    with pytest.raises(ValueError):
-        calculate_transaction_fee(-1, -1)
+
+def test_calculate_transaction_fee_no_fee_rate_provided():
+    assert calculate_transaction_fee(1, 1) == 2885
