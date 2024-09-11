@@ -25,7 +25,7 @@ def process_request():
     """A dummy function to simulate request processing."""
     time.sleep(2)
 
-if name == "__main__":
+if __name__ == "__main__":
     start_monitoring_server()
     while True:
         process_request()

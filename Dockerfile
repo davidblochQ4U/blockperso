@@ -31,7 +31,12 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy the application scripts and other files
-COPY . /app/
+COPY ./app /app/app
+COPY ./tests /app/tests
+COPY ./requirements.txt /app/
+COPY ./requirements_tests.txt /app/
+
+COPY ./tests /app/tests
 
 # Setup runtime
 USER root
